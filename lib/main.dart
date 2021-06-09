@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
+//import 'package:hive/hive.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,6 +22,9 @@ enum AppState {
 
 class _MyAppState extends State<MyApp> {
   List<HealthDataPoint> _healthDataList = [];
+  int onedaysteps = 0;
+  String date;
+  String tmpdate;
   AppState _state = AppState.DATA_NOT_FETCHED;
   @override
   void initState() {
@@ -26,24 +32,32 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> fetchData() async {
+    if (await Permission.contacts.request().isGranted) {
+      // Either the permission was already granted before or the user just granted it.
+    }
+    // You can request multiple permissions at once.
+    Map<Permission, PermissionStatus> statuses =
+        await [Permission.activityRecognition].request();
+    print(statuses[Permission.location]);
+
     /// Get everything from midnight until now
     DateTime endDate = DateTime.now();
-    DateTime startDate = DateTime(2020, 01, 01);
+    DateTime startDate = endDate.add(Duration(days: 1) * -1);
+    DateFormat outputdate = DateFormat('yyyy-MM-dd');
+    date = outputdate.format(endDate);
     HealthFactory health = HealthFactory();
 
     /// Define the types to get.
     List<HealthDataType> types = [
-      HealthDataType.BODY_MASS_INDEX,
-      HealthDataType.WEIGHT,
-      //HealthDataType.ACTIVE_ENERGY_BURNED,
-      HealthDataType.WATER,
-      HealthDataType.HEIGHT,
       HealthDataType.STEPS,
     ];
     setState(() => _state = AppState.FETCHING_DATA);
 
     /// You MUST request access to the data types before reading them
     bool accessWasGranted = await health.requestAuthorization(types);
+
+    int steps = 0;
+
     if (accessWasGranted) {
       try {
         /// Fetch new data
@@ -59,8 +73,15 @@ class _MyAppState extends State<MyApp> {
       /// Filter out duplicates
       _healthDataList = HealthFactory.removeDuplicates(_healthDataList);
 
-      /// Print the results
-      _healthDataList.forEach((x) => print("Data point: $x"));
+      for (int i = 0; i < _healthDataList.length; i++) {
+        tmpdate = outputdate.format(_healthDataList[i].dateFrom);
+        if (tmpdate == date) {
+          steps += _healthDataList[i].value;
+        }
+      }
+
+      onedaysteps = steps;
+      //print("Steps: $steps");
 
       /// Update the UI to display the results
       setState(() {
@@ -88,16 +109,27 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _contentDataReady() {
+    /*
     return ListView.builder(
-        itemCount: _healthDataList.length,
-        itemBuilder: (_, index) {
-          HealthDataPoint p = _healthDataList[index];
-          return ListTile(
-            title: Text("${p.typeString}: ${p.value}"),
-            trailing: Text('${p.unitString}'),
-            subtitle: Text('${p.dateFrom} - ${p.dateTo}'),
-          );
-        });
+      itemCount: _healthDataList.length,
+      itemBuilder: (_, index) {
+        HealthDataPoint p = _healthDataList[index];
+        DateFormat outputdate = DateFormat('yyyy-MM-dd');
+        String tmpdate = outputdate.format(p.dateFrom);
+        return ListTile(
+          title: Text("${p.typeString}: ${p.value}"),
+          subtitle: Text('$tmpdate'),
+        );
+      },
+    );
+    */
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Date : $date '),
+        Text(' Steps : $onedaysteps'),
+      ],
+    );
   }
 
   Widget _contentNoData() {
@@ -105,7 +137,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _contentNotFetched() {
-    return Text('Press the download button to fetch data');
+    return Text('Press the loading button to fetch data');
   }
 
   Widget _authorizationNotGranted() {
@@ -123,6 +155,7 @@ class _MyAppState extends State<MyApp> {
       return _contentFetchingData();
     else if (_state == AppState.AUTH_NOT_GRANTED)
       return _authorizationNotGranted();
+
     return _contentNotFetched();
   }
 
@@ -131,10 +164,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('Plugin example app'),
+            title: const Text('Health app'),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.file_download),
+                icon: Icon(Icons.autorenew_sharp),
                 onPressed: () {
                   fetchData();
                 },

@@ -23,13 +23,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
   health:
     git:
       url: https://github.com/traveling-developer/flutter-plugins.git
       path: packages/health
       ref: health-3.0.3+1
+
   permission_handler: ^5.0.1+1
 
+  intl: ^0.17.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
