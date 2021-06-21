@@ -3,9 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
-//import 'package:hive/hive.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() => runApp(MyApp());
+import 'database/database.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(StepcountModelAdapter());
+  await Hive.openBox('steps');
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -43,7 +52,7 @@ class _MyAppState extends State<MyApp> {
     /// Get everything from midnight until now
     DateTime endDate = DateTime.now();
     DateTime startDate = endDate.add(Duration(days: 1) * -1);
-    DateFormat outputdate = DateFormat('yyyy-MM-dd');
+    DateFormat outputdate = DateFormat('yyyy,MM,dd');
     date = outputdate.format(endDate);
     HealthFactory health = HealthFactory();
 
@@ -79,8 +88,7 @@ class _MyAppState extends State<MyApp> {
           steps += _healthDataList[i].value;
         }
       }
-
-      onedaysteps = steps;
+      Hive.box('steps').put(date, steps);
       //print("Steps: $steps");
 
       /// Update the UI to display the results
@@ -109,6 +117,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _contentDataReady() {
+    int _step = Hive.box('steps').get(date);
     /*
     return ListView.builder(
       itemCount: _healthDataList.length,
@@ -127,7 +136,7 @@ class _MyAppState extends State<MyApp> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text('Date : $date '),
-        Text(' Steps : $onedaysteps'),
+        Text(' Steps : $_step'),
       ],
     );
   }
