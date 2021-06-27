@@ -5,8 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'database/database.dart';
+import 'pet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,9 +16,18 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+class MyApp extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
+      home: HealthScreen(),
+      routes: <String, WidgetBuilder>{
+        '/pet': (BuildContext context) => new SecondRoute(),
+      },
+    );
+  }
 }
 
 enum AppState {
@@ -29,7 +38,14 @@ enum AppState {
   AUTH_NOT_GRANTED
 }
 
-class _MyAppState extends State<MyApp> {
+class HealthScreen extends StatefulWidget {
+  HealthScreen({Key key}) : super(key: key);
+
+  @override
+  _HealthScreenState createState() => _HealthScreenState();
+}
+
+class _HealthScreenState extends State<HealthScreen> {
   List<HealthDataPoint> _healthDataList = [];
   int onedaysteps = 0;
   String date;
@@ -118,20 +134,6 @@ class _MyAppState extends State<MyApp> {
 
   Widget _contentDataReady() {
     int _step = Hive.box('steps').get(date);
-    /*
-    return ListView.builder(
-      itemCount: _healthDataList.length,
-      itemBuilder: (_, index) {
-        HealthDataPoint p = _healthDataList[index];
-        DateFormat outputdate = DateFormat('yyyy-MM-dd');
-        String tmpdate = outputdate.format(p.dateFrom);
-        return ListTile(
-          title: Text("${p.typeString}: ${p.value}"),
-          subtitle: Text('$tmpdate'),
-        );
-      },
-    );
-    */
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -170,22 +172,55 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Health app'),
-            actions: <Widget>[
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Health app'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.autorenew_sharp),
+            onPressed: () {
+              fetchData();
+            },
+          )
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: _content(),
+          ),
+          Column(
+            children: [
+              Text("Watching Pet"),
               IconButton(
-                icon: Icon(Icons.autorenew_sharp),
+                icon: Icon(Icons.arrow_forward),
                 onPressed: () {
-                  fetchData();
+                  int _steps = Hive.box('steps').get(date);
+                  if (_steps >= 20) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        settings: const RouteSettings(name: "/pet"),
+                        builder: (context) => ThirdRoute(),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        settings: const RouteSettings(name: "/pet"),
+                        builder: (context) => SecondRoute(),
+                      ),
+                    );
+                  }
                 },
               )
             ],
-          ),
-          body: Center(
-            child: _content(),
-          )),
+          )
+        ],
+      ),
     );
   }
 }
