@@ -11,7 +11,7 @@ class SecondRoute extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'under 20',
+              'under 120',
             ),
           ],
         ),
@@ -30,8 +30,11 @@ class ThirdRoute extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'over 20',
+            Image(
+              image: AssetImage('assets/niwatori-ani02.gif'),
+              height: 60.0,
+              width: 60.0,
+              fit: BoxFit.cover,
             ),
           ],
         ),
