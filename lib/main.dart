@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'database/database.dart';
 import 'pet.dart';
+import 'dart:math';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -68,7 +69,7 @@ class _HealthScreenState extends State<HealthScreen> {
     /// Get everything from midnight until now
     DateTime endDate = DateTime.now();
     DateTime startDate = endDate.add(Duration(days: 1) * -1);
-    DateFormat outputdate = DateFormat('yyyy,MM,dd');
+    DateFormat outputdate = DateFormat('yyyy/MM/dd');
     date = outputdate.format(endDate);
     HealthFactory health = HealthFactory();
 
@@ -134,10 +135,17 @@ class _HealthScreenState extends State<HealthScreen> {
 
   Widget _contentDataReady() {
     int _step = Hive.box('steps').get(date);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      alignment: AlignmentDirectional.center,
       children: <Widget>[
-        Text('Date : $date '),
+        SizedBox(
+          width: 150,
+          height: 150,
+          child: CircularProgressIndicator(
+            strokeWidth: 20,
+            value: _step / 5000,
+          ),
+        ),
         Text(' Steps : $_step'),
       ],
     );
@@ -185,11 +193,22 @@ class _HealthScreenState extends State<HealthScreen> {
         ],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(
-            child: _content(),
+          SizedBox(
+            height: 300,
+            child: Card(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text('Date : $date'),
+                  Center(
+                    child: _content(),
+                  ),
+                ],
+              ),
+            ),
           ),
           Column(
             children: [
@@ -198,7 +217,7 @@ class _HealthScreenState extends State<HealthScreen> {
                 icon: Icon(Icons.arrow_forward),
                 onPressed: () {
                   int _steps = Hive.box('steps').get(date);
-                  if (_steps >= 120) {
+                  if (_steps >= 500) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -222,5 +241,25 @@ class _HealthScreenState extends State<HealthScreen> {
         ],
       ),
     );
+  }
+}
+
+class CirclePainter extends CustomPainter {
+  void paint(Canvas canvas, Size size) {
+    /// 線は黒色を指定する
+    Paint outerCircle = Paint()
+      ..strokeWidth = 5
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke;
+
+    Offset center = Offset(size.width / 2, size.height / 2);
+    double radius = min(size.width / 2, size.height / 2) - 7;
+
+    canvas.drawCircle(center, radius, outerCircle);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }
