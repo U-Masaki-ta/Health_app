@@ -225,7 +225,7 @@ class _HealthScreenState extends State<HealthScreen> {
                     iconSize: 64,
                     onPressed: () {
                       int _steps = Hive.box('steps').get(date);
-                      if (_steps >= 500) {
+                      if (_steps >= 10000) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -10,8 +10,11 @@ class SecondRoute extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'under 500',
+            Image(
+              image: AssetImage('assets/egg.gif'),
+              height: 100.0,
+              width: 100.0,
+              fit: BoxFit.cover,
             ),
           ],
         ),
