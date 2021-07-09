@@ -146,7 +146,7 @@ class _HealthScreenState extends State<HealthScreen> {
             value: _step / 5000,
           ),
         ),
-        Text(' Steps : $_step'),
+        Text('Steps\n $_step'),
       ],
     );
   }
@@ -198,6 +198,7 @@ class _HealthScreenState extends State<HealthScreen> {
         children: [
           SizedBox(
             height: 300,
+            width: double.infinity,
             child: Card(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -210,34 +211,43 @@ class _HealthScreenState extends State<HealthScreen> {
               ),
             ),
           ),
-          Column(
-            children: [
-              Text("Watching Pet"),
-              IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: () {
-                  int _steps = Hive.box('steps').get(date);
-                  if (_steps >= 500) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        settings: const RouteSettings(name: "/pet"),
-                        builder: (context) => ThirdRoute(),
-                      ),
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        settings: const RouteSettings(name: "/pet"),
-                        builder: (context) => SecondRoute(),
-                      ),
-                    );
-                  }
-                },
-              )
-            ],
-          )
+          SizedBox(
+            height: 300,
+            width: double.infinity,
+            child: Card(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text("Watching Pet"),
+                  IconButton(
+                    icon: Icon(Icons.play_arrow_sharp),
+                    color: Colors.purple,
+                    iconSize: 64,
+                    onPressed: () {
+                      int _steps = Hive.box('steps').get(date);
+                      if (_steps >= 10000) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: "/pet"),
+                            builder: (context) => ThirdRoute(),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            settings: const RouteSettings(name: "/pet"),
+                            builder: (context) => SecondRoute(),
+                          ),
+                        );
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -246,10 +256,8 @@ class _HealthScreenState extends State<HealthScreen> {
 
 class CirclePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
-    /// 線は黒色を指定する
     Paint outerCircle = Paint()
       ..strokeWidth = 5
-      ..color = Colors.blue
       ..style = PaintingStyle.stroke;
 
     Offset center = Offset(size.width / 2, size.height / 2);
