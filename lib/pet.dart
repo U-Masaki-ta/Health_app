@@ -12,8 +12,8 @@ class SecondRoute extends StatelessWidget {
           children: <Widget>[
             Image(
               image: AssetImage('assets/egg.gif'),
-              height: 100.0,
-              width: 100.0,
+              height: 150.0,
+              width: 150.0,
               fit: BoxFit.cover,
             ),
           ],
@@ -34,9 +34,9 @@ class ThirdRoute extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image(
-              image: AssetImage('assets/niwatori-ani02.gif'),
-              height: 100.0,
-              width: 100.0,
+              image: AssetImage('assets/cha1.gif'),
+              height: 200.0,
+              width: 200.0,
               fit: BoxFit.cover,
             ),
           ],
