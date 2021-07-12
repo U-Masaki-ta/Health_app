@@ -63,8 +63,13 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/niwatori-ani02.gif
+   - assets/cha1.gif
    - assets/egg.gif
+
+  fonts:
+    - family: Molot
+      fonts:
+        - asset: assets/fonts/Molot.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

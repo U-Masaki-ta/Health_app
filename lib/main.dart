@@ -128,7 +128,13 @@ class _HealthScreenState extends State<HealthScreen> {
             child: CircularProgressIndicator(
               strokeWidth: 10,
             )),
-        Text('Fetching data...')
+        Text(
+          'Fetching data...',
+          style: TextStyle(
+            fontFamily: 'Molot',
+            fontSize: 20,
+          ),
+        )
       ],
     );
   }
@@ -146,23 +152,47 @@ class _HealthScreenState extends State<HealthScreen> {
             value: _step / 5000,
           ),
         ),
-        Text('Steps\n $_step'),
+        Text(
+          'Steps\n $_step',
+          style: TextStyle(
+            fontFamily: 'Molot',
+            fontSize: 25,
+          ),
+        ),
       ],
     );
   }
 
   Widget _contentNoData() {
-    return Text('No Data to show');
+    return Text(
+      'No Data to show',
+      style: TextStyle(
+        fontFamily: 'Molot',
+        fontSize: 16,
+      ),
+    );
   }
 
   Widget _contentNotFetched() {
-    return Text('Press the loading button to fetch data');
+    return Text(
+      'Press the loading button to fetch data',
+      style: TextStyle(
+        fontFamily: 'Molot',
+        fontSize: 16,
+      ),
+    );
   }
 
   Widget _authorizationNotGranted() {
-    return Text('''Authorization not given.
+    return Text(
+      '''Authorization not given.
         For Android please check your OAUTH2 client ID is correct in Google Developer Console.
-         For iOS check your permissions in Apple Health.''');
+         For iOS check your permissions in Apple Health.''',
+      style: TextStyle(
+        fontFamily: 'Molot',
+        fontSize: 16,
+      ),
+    );
   }
 
   Widget _content() {
@@ -182,7 +212,13 @@ class _HealthScreenState extends State<HealthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Health app'),
+        title: const Text(
+          'Health app',
+          style: TextStyle(
+            fontFamily: 'Molot',
+            fontSize: 25,
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.autorenew_sharp),
@@ -203,7 +239,13 @@ class _HealthScreenState extends State<HealthScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text('Date : $date'),
+                  Text(
+                    'Date : $date',
+                    style: TextStyle(
+                      fontFamily: 'Molot',
+                      fontSize: 20,
+                    ),
+                  ),
                   Center(
                     child: _content(),
                   ),
@@ -218,14 +260,20 @@ class _HealthScreenState extends State<HealthScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text("Watching Pet"),
+                  Text(
+                    "Watching Pet",
+                    style: TextStyle(
+                      fontFamily: 'Molot',
+                      fontSize: 20,
+                    ),
+                  ),
                   IconButton(
                     icon: Icon(Icons.play_arrow_sharp),
                     color: Colors.purple,
                     iconSize: 64,
                     onPressed: () {
                       int _steps = Hive.box('steps').get(date);
-                      if (_steps >= 10000) {
+                      if (_steps >= 5000) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
